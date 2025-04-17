@@ -39,8 +39,8 @@ router.post('/login', async (req, res) => {
         if(!isMatch) {
             return res.status(401).json({message : "wrong password"})
         }
-        //const token = jwt.sign({id: rows[0].id}, process.env.JWT_KEY, {expiresIn: '3h'})
-        //console.log(token)
+        const token = jwt.sign({id: rows[0].id}, process.env.JWT_KEY, {expiresIn: '3h'})
+        console.log(token)
         return res.status(201).json({token: token})
     } catch(err) {
         return res.status(500).json(err.message)

@@ -18,7 +18,8 @@ const Login = () => {
             const response = await axios.post('http://localhost:3000/auth/login', values)
             if(response.status === 201) {
                 localStorage.setItem('token', response.data.token)
-                navigate('/')
+                localStorage.setItem('instanceUrl', response.data.instanceUrl)
+                navigate('/dashboard')
             }
         } catch(err) {
             console.log(err.message)
