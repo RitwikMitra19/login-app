@@ -12,7 +12,6 @@ export const connectToDatabase = async () => {
         database: process.env.DB_NAME,
       });
     }
-    //console.log(connection)
     return connection;
   } catch (err) {
     console.log(err);

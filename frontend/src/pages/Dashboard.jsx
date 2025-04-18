@@ -23,8 +23,6 @@ const Dashboard = () => {
                     }
                 });
 
-                console.log(response.data.data);
-                
                 setAccounts(response.data.data.map(account => ({
                     id: account.id,
                     name: account.name,
