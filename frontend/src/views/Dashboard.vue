@@ -148,7 +148,7 @@ const totalPages = ref(1)
 
 const fetchAccounts = async () => {
   try {
-    const response = await axios.get('http://localhost:3000/api/salesforce/accounts', {
+    const response = await axios.get('http://localhost:3000/api/accounts', {
       params: {
         page: currentPage.value,
         limit: itemsPerPage.value

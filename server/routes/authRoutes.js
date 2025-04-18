@@ -2,6 +2,7 @@ import express from 'express'
 import {connectToDatabase} from '../lib/db.js'
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
+import * as jsforce from 'jsforce'
 
 const router = express.Router()
 
@@ -74,5 +75,60 @@ router.get('/home', verifyToken, async (req, res) => {
         return res.status(500).json({message: "server error"})
     }
 })
+
+router.get('/accounts', verifyToken, async (req, res) => {
+    try {
+        // Connect to Salesforce using OAuth2
+        const conn = new jsforce.Connection({
+            loginUrl: process.env.SF_LOGIN_URL || 'https://login.salesforce.com'
+        });
+
+        // Get security token from environment variable
+        const securityToken = process.env.SF_SECURITY_TOKEN || '';
+        
+        // Login to Salesforce using environment variables
+        await conn.login(
+            process.env.SF_USERNAME,
+            process.env.SF_PASSWORD + securityToken
+        );
+
+        console.log("Connected to Salesforce");
+
+        // Query Salesforce accounts
+        const result = await conn.query(
+            'SELECT Id, Name, Type, Industry, Phone, Website, AnnualRevenue, BillingCity, BillingState, BillingCountry FROM Account ORDER BY Name LIMIT 100'
+        );
+
+        // Return only necessary fields and sanitize data
+        const accounts = result.records.map(account => ({
+            id: account.Id,
+            name: account.Name,
+            type: account.Type,
+            industry: account.Industry,
+            phone: account.Phone,
+            website: account.Website,
+            annualRevenue: account.AnnualRevenue,
+            location: {
+                city: account.BillingCity,
+                state: account.BillingState,
+                country: account.BillingCountry
+            }
+        }));
+
+        return res.status(200).json({
+            success: true,
+            data: accounts,
+            total: result.totalSize
+        });
+
+    } catch (error) {
+        console.error('Salesforce Error:', error);
+        return res.status(500).json({
+            success: false,
+            message: 'Error fetching Salesforce accounts',
+            error: error.message
+        });
+    }
+});
 
 export default router;

@@ -17,13 +17,15 @@ const Dashboard = () => {
 
         const fetchAccounts = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/accounts', {
+                const response = await axios.get('http://localhost:3000/auth/accounts', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
                 });
+
+                console.log(response.data.data);
                 
-                setAccounts(response.data.map(account => ({
+                setAccounts(response.data.data.map(account => ({
                     id: account.id,
                     name: account.name,
                     type: account.type,
