@@ -15,7 +15,7 @@ const Login = () => {
     const handleSumbit = async (e) => {
         e.preventDefault()
         try {
-            const response = await axios.post('http://localhost:3000/auth/login', values)
+            const response = await axios.post('https://login-app-i7ox.onrender.com/auth/login', values)
             if(response.status === 201) {
                 localStorage.setItem('token', response.data.token)
                 localStorage.setItem('instanceUrl', response.data.instanceUrl)

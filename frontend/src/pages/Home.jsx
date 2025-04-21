@@ -7,7 +7,7 @@ const Home = () => {
   const fetchUser = async () => {
     try {
       const token = localStorage.getItem('token')
-      const response = await axios.get('http://localhost:3000/auth/home', {
+      const response = await axios.get('https://login-app-i7ox.onrender.com/auth/home', {
         headers: {
           "Authorization" : `Bearer ${token}`
         }

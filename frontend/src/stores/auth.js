@@ -14,7 +14,7 @@ export const useAuthStore = defineStore('auth', {
   actions: {
     async login(email, password) {
       try {
-        const response = await axios.post('http://localhost:3000/api/auth/login', {
+        const response = await axios.post('https://login-app-i7ox.onrender.com/api/auth/login', {
           email,
           password
         })
@@ -32,7 +32,7 @@ export const useAuthStore = defineStore('auth', {
 
     async register(email, password) {
       try {
-        const response = await axios.post('http://localhost:3000/api/auth/register', {
+        const response = await axios.post('https://login-app-i7ox.onrender.com/api/auth/register', {
           email,
           password
         })

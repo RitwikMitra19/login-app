@@ -16,7 +16,7 @@ const Register = () => {
     const handleSumbit = async (e) => {
         e.preventDefault()
         try {
-            const response = await axios.post('http://localhost:3000/auth/register', values)
+            const response = await axios.post('https://login-app-i7ox.onrender.com/auth/register', values)
             if(response.status === 201) {
                 navigate('/login')
             }

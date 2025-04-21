@@ -17,7 +17,7 @@ const Dashboard = () => {
 
         const fetchAccounts = async () => {
             try {
-                const response = await axios.get('http://localhost:3000/auth/accounts', {
+                const response = await axios.get('https://login-app-i7ox.onrender.com/auth/accounts', {
                     headers: {
                         Authorization: `Bearer ${token}`
                     }
