@@ -9,15 +9,23 @@ const router = express.Router()
 router.post('/register', async (req, res) => {
     const {username, email, password} = req.body;
     try {
-        const db = await connectToDatabase()
+        const pool = await connectToDatabase()
         console.log("Database connected")
-        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email])
-        if(rows.length > 0) {
+        
+        // PostgreSQL uses different query syntax
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email])
+        
+        // PostgreSQL returns results differently - no [rows]
+        if(result.rows.length > 0) {
             return res.status(409).json({message : "user already existed"})
         }
+        
         const hashPassword = await bcrypt.hash(password, 10)
-        await db.query("INSERT INTO users (username, email, password) VALUES (?, ?, ?)", 
+        
+        // Using $1, $2, $3 for parameterized queries in PostgreSQL
+        await pool.query("INSERT INTO users (username, email, password) VALUES ($1, $2, $3)", 
             [username, email, hashPassword])
+            
         return res.status(201).json({message: "user created successfully"})
     } catch(err) {
         return res.status(500).json(err.message)
@@ -27,16 +35,19 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
     const {email, password} = req.body;
     try {
-        const db = await connectToDatabase()
-        const [rows] = await db.query('SELECT * FROM users WHERE email = ?', [email])
-        if(rows.length === 0) {
+        const pool = await connectToDatabase()
+        const result = await pool.query('SELECT * FROM users WHERE email = $1', [email])
+        
+        if(result.rows.length === 0) {
             return res.status(404).json({message : "user not existed"})
         }
-        const isMatch = await bcrypt.compare(password, rows[0].password)
+        
+        const isMatch = await bcrypt.compare(password, result.rows[0].password)
         if(!isMatch) {
             return res.status(401).json({message : "wrong password"})
         }
-        const token = jwt.sign({id: rows[0].id}, process.env.JWT_KEY, {expiresIn: '3h'})
+        
+        const token = jwt.sign({id: result.rows[0].id}, process.env.JWT_KEY, {expiresIn: '3h'})
         return res.status(201).json({token: token})
     } catch(err) {
         return res.status(500).json(err.message)
@@ -59,14 +70,15 @@ const verifyToken = async (req, res, next) => {
 
 router.get('/home', verifyToken, async (req, res) => {
     try {
-        const db = await connectToDatabase()
-        const [rows] = await db.query('SELECT * FROM users WHERE id = ?', [req.userId])
-        if(rows.length === 0) {
+        const pool = await connectToDatabase()
+        const result = await pool.query('SELECT * FROM users WHERE id = $1', [req.userId])
+        
+        if(result.rows.length === 0) {
             return res.status(404).json({message : "user not existed"})
         }
 
-        return res.status(201).json({user: rows[0]})
-    }catch(err) {
+        return res.status(201).json({user: result.rows[0]})
+    } catch(err) {
         return res.status(500).json({message: "server error"})
     }
 })
