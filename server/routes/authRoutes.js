@@ -10,6 +10,16 @@ router.post('/register', async (req, res) => {
     const {username, email, password} = req.body;
     try {
         const pool = await connectToDatabase()
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS users (
+              id SERIAL PRIMARY KEY,
+              username VARCHAR(50) NOT NULL,
+              email VARCHAR(100) NOT NULL UNIQUE,
+              password VARCHAR(100) NOT NULL
+            );
+          `);
+          
+        console.log('Users table created successfully');
         console.log("Database connected")
         
         // PostgreSQL uses different query syntax
