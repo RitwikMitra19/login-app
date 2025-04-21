@@ -37,9 +37,10 @@ export const connectToDatabase = async () => {
     }
     
     // Test the connection
+    console.log ("pool initialized");
     const client = await pool.connect();
+    console.log ("pool connected");
     client.release();
-    
     return pool;
   } catch (err) {
     console.log(err);
