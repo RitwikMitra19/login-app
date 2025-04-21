@@ -1,10 +1,10 @@
+Hosted the website on render : https://login-app-frontend-hdzm.onrender.com
+
 Steps to run :
-
-1. Clone the repo
-2. Open terminal and execute command "cd frontend"
-3. execute "npm run dev"
-4. In a new terminal window, execute "cd .."
-5. cd server
-6. npm start
-
-Hosted the website on render : https://login-app-i7ox.onrender.com
+1. Open the above website
+2. Register yourself as a new user
+3. Use the same username and password for logging in
+4. You can see all the salesforce accounts mapped to my salesforce account
+5. Already registered user :
+    email : ritwikmitra@gmail.com
+    password : 123456789
